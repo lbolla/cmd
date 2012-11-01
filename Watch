@@ -9,7 +9,7 @@
 # triggered too many times from acme
 # kill itself
 
-from pyinotify import WatchManager, EventsCodes, ProcessEvent, Notifier
+from pylib.pyinotify import WatchManager, EventsCodes, ProcessEvent, Notifier
 from subprocess import call
 import sys
 import time

@@ -2,7 +2,7 @@
 
 import zipfile
 import xml.dom.minidom
-from xmlutil import getText, getInput
+from pylib.xmlutil import getText, getInput
 
 mydoc = zipfile.ZipFile(getInput())
 document = mydoc.read('word/document.xml')
