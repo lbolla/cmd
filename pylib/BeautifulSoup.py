@@ -89,6 +89,7 @@ import markupbase
 import types
 import re
 import sgmllib
+import os
 try:
   from htmlentitydefs import name2codepoint
 except ImportError:
@@ -103,6 +104,10 @@ sgmllib.tagfind = re.compile('[a-zA-Z][-_.:a-zA-Z0-9]*')
 markupbase._declname_match = re.compile(r'[a-zA-Z][-_.:a-zA-Z0-9]*\s*').match
 
 DEFAULT_OUTPUT_ENCODING = "utf-8"
+try:
+    TABSTOP = int(os.environ['tabstop'])
+except:
+    TABSTOP = 4
 
 def _match_css_class(str):
     """Build a RE to match the given CSS class."""
@@ -752,8 +757,8 @@ class Tag(PageElement):
         indentTag, indentContents = 0, 0
         if prettyPrint:
             indentTag = indentLevel
-            space = (' ' * (indentTag-1))
-            indentContents = indentTag + 1
+            space = (' ' * (indentTag-TABSTOP))
+            indentContents = indentTag + TABSTOP
         contents = self.renderContents(encoding, prettyPrint, indentContents)
         if self.hidden:
             s = contents
@@ -813,7 +818,7 @@ class Tag(PageElement):
                 text = text.strip()
             if text:
                 if prettyPrint:
-                    s.append(" " * (indentLevel-1))
+                    s.append(" " * (indentLevel-TABSTOP))
                 s.append(text)
                 if prettyPrint:
                     s.append("\n")
