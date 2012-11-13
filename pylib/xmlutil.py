@@ -3,7 +3,7 @@ import sys
 
 def getInput():
     if len(sys.argv) > 1:
-        return open(sys.argv[1])
+        return open(sys.argv[1], 'r')
     else:
         return sys.stdin
 
