@@ -1,0 +1,10 @@
+#!/bin/sh
+
+URL=$1
+WHAT=$2
+
+if [ -e "$2" ]; then
+    curl -F filename=@$WHAT $URL
+else
+    curl -D $WHAT $URL
+fi
