@@ -7,4 +7,4 @@ from pylib.xmlutil import getText, getInput
 mydoc = zipfile.ZipFile(getInput())
 document = mydoc.read('word/document.xml')
 dom = xml.dom.minidom.parseString(document)
-print(getText(dom))
+print(getText(dom, join_char='\n'))

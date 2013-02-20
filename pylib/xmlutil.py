@@ -16,7 +16,7 @@ def _getText(root, rc):
     return rc
 
 
-def getText(root):
+def getText(root, join_char=''):
     rc = []
     _getText(root, rc)
-    return ''.join(rc)
+    return join_char.join(rc)
