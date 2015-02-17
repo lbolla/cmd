@@ -2,7 +2,15 @@
 
 import csv
 import sys
-import pprint
 
-for row in csv.DictReader(sys.stdin):
-    pprint.pprint(row)
+
+data = csv.DictReader(sys.stdin)
+cols = sys.argv[1:] if len(sys.argv) > 1 else data.fieldnames
+
+for col in cols:
+    print '%10s\t' % col,
+print
+for row in data:
+    for col in cols:
+        print '%10s\t' % row[col],
+    print
