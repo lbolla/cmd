@@ -1,0 +1,24 @@
+#!/usr/bin/env python
+
+import csv
+import sys
+
+fn1, fn2 = sys.argv[1], sys.argv[2]
+
+c1 = csv.DictReader(open(fn1, 'r'))
+c2 = csv.DictReader(open(fn2, 'r'))
+
+d1 = set()
+for line in c1:
+    d1.add(frozenset(line.items()))
+
+d2 = set()
+for line in c2:
+    d2.add(frozenset(line.items()))
+
+if d1 == d2:
+    sys.exit(0)
+else:
+    # print '-\n', d1.difference(d2)
+    # print '+\n', d2.difference(d1)
+    sys.exit(1)
