@@ -1,0 +1,47 @@
+#!/usr/bin/env python
+
+import csv
+import gzip
+import sys
+
+assert len(sys.argv) > 2, 'Need 2 input files'
+
+def open_(fn, mode):
+    if fn.endswith('.gz'):
+        return gzip.open(fn, mode)
+    return open(fn, mode)
+
+
+def itercsv(fns, mode):
+    for fn in fns:
+        f = None
+        try:
+            f = open_(fn, mode)
+            yield csv.DictReader(f)
+        finally:
+            # Bloody Python2.6
+            if f:
+                f.close()
+
+
+fnames = sys.argv[1:]
+
+# Collect fieldnames, maintaining ordering of first file
+fieldnames = []
+for csv_ in itercsv(fnames, 'r'):
+    for fieldname in csv_.fieldnames:
+        if fieldname not in fieldnames:
+            fieldnames.append(fieldname)
+
+outcsv = csv.DictWriter(sys.stdout, fieldnames=fieldnames)
+if hasattr(outcsv, 'writeheader'):
+    outcsv.writeheader()
+else:
+    # Python2.6
+    header = ','.join(fieldnames)
+    lt = outcsv.writer.dialect.lineterminator
+    sys.stdout.write(header + lt)
+
+for csv_ in itercsv(fnames, 'r'):
+    for line in csv_:
+        outcsv.writerow(line)
