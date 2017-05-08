@@ -1,0 +1,62 @@
+#!/usr/bin/env python
+
+import os
+import re
+import sys
+import subprocess
+import tempfile
+
+DIFF_RE = re.compile(r'^Files (.+) and (.+) differ$')
+
+
+def unzip(fname):
+    tmpdir = tempfile.mkdtemp()
+    cmd = ['unzip', fname, '-d', tmpdir]
+    subprocess.check_call(cmd)
+    return tmpdir
+
+
+def diffxml(xml1, xml2):
+    print '\n***', xml1, xml2, '\n'
+    cmd = (
+        'bash -c "'
+        'diff -y --suppress-common-lines '
+        '<(xmllint --format ' + xml1 + ') '
+        '<(xmllint --format ' + xml2 + ') '
+        '"'
+    )
+    os.system(cmd)
+    print
+
+
+def diffdir(dir1, dir2):
+    # cmd = ['diff', '-r', dir1, dir2]
+    # subprocess.check_call(cmd)
+    cmd = ['diff', '-qr', dir1, dir2]
+    try:
+        output = subprocess.check_output(cmd)
+    except subprocess.CalledProcessError as exc:
+        output = exc.output
+
+    for line in output.splitlines():
+        m = DIFF_RE.match(line)
+        if m is not None:
+            xml1, xml2 = m.groups()
+            diffxml(xml1, xml2)
+        else:
+            print line
+
+
+def xlsxdiff(fname1, fname2):
+    dir1 = unzip(fname1)
+    dir2 = unzip(fname2)
+    diffdir(dir1, dir2)
+
+
+def main():
+    fname1, fname2 = sys.argv[1:3]
+    xlsxdiff(fname1, fname2)
+
+
+if __name__ == '__main__':
+    main()

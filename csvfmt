@@ -1,16 +1,35 @@
-#!/usr/bin/env python
+#!/usr/bin/python2
 
 import csv
+import re
 import sys
 
 
-data = csv.DictReader(sys.stdin)
-cols = sys.argv[1:] if len(sys.argv) > 1 else data.fieldnames
+def is_regex(s):
+    return (
+        r'*' in s or
+        r'\.' in s or
+        r'?' in s)
 
+data = csv.DictReader(sys.stdin)
+cols_ = sys.argv[1:] if len(sys.argv) > 1 else data.fieldnames
+
+cols = []
+for col in cols_:
+    if is_regex(col):
+        r = re.compile(col)
+        for f in data.fieldnames:
+            if r.match(f) is not None and f not in cols:
+                cols.append(f)
+    else:
+        cols.append(col)
+
+n = max(len(col) for col in cols)
+fmt = '%{}s '.format(n)
 for col in cols:
-    print '%10s\t' % col,
+    print fmt % col,
 print
 for row in data:
     for col in cols:
-        print '%10s\t' % row[col],
+        print fmt % row[col],
     print
