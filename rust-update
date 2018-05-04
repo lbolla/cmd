@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Strict mode
+set -euo pipefail
+IFS=$'\n\t'
+
+rustup update
+
+for pkg in cargo-outdated cargo-watch fd-find racer ripgrep xsv; do
+    echo 'Upgrading' $pkg
+    cargo +stable install $pkg --force
+done
+
+for pkg in clippy; do
+    echo 'Upgrading' $pkg
+    cargo +nightly install $pkg --force
+done
